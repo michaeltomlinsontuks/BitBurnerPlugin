@@ -1,3 +1,5 @@
+package com.github.michaeltomlinsontuks.bitburnerplugin
+
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.plugins.*

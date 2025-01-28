@@ -1,3 +1,5 @@
+package com.github.michaeltomlinsontuks.bitburnerplugin
+
 import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project

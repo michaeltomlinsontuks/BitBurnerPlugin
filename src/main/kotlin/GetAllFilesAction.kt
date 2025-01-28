@@ -1,3 +1,5 @@
+package com.github.michaeltomlinsontuks.bitburnerplugin
+
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.ui.Messages
@@ -5,30 +7,32 @@ import io.ktor.client.*
 import kotlinx.coroutines.runBlocking
 
 class GetAllFilesAction : AnAction("Get All Files from Bitburner") {
+    private val apiService = BitburnerApiService()
+
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
 
-        val authToken = BitburnerSettings.getInstance().authToken
-        val serverUrl = GameConfig.getServerUrl()
-        val apiService = BitburnerApiService()
+        val settings = BitburnerSettings.getInstance()
+        if (settings.authToken.isNullOrEmpty()) {
+            Messages.showErrorDialog(project, "Please set your auth token in Settings -> Bitburner Settings", "Error")
+            return
+        }
 
-        val server = "home" // Replace with your actual server name
+        runBlocking {
+            try {
+                val serverUrl = GameConfig.getServerUrl()
+                val server = "home" // Replace with your actual server name
+                val response = apiService.getAllFiles(1, server, settings.authToken!!)
 
-        try {
-            val response = runBlocking {
-                apiService.getAllFiles(1, server, authToken)
+                if (response.error == null) {
+                    val fileContents = response.result?.joinToString("\n") { "${it["filename"]}: ${it["content"]}" }
+                    Messages.showInfoMessage(project, "Files:\n$fileContents", "Success")
+                } else {
+                    Messages.showErrorDialog(project, "Failed to get files: ${response.error}", "Error")
+                }
+            } catch (ex: Exception) {
+                Messages.showErrorDialog(project, "An error occurred: ${ex.message}", "Error")
             }
-
-            if (response.error == null) {
-                val fileContents = response.result?.joinToString("\n") { "${it["filename"]}: ${it["content"]}" }
-                Messages.showMessageDialog(project, "Files:\n$fileContents", "Success", Messages.getInformationIcon())
-            } else {
-                Messages.showMessageDialog(project, "Failed to get files: ${response.error}", "Error", Messages.getErrorIcon())
-            }
-        } catch (ex: Exception) {
-            Messages.showMessageDialog(project, "An error occurred: ${ex.message}", "Error", Messages.getErrorIcon())
-        } finally {
-            // client.close() // Removed this line as client is no longer created
         }
     }
 }

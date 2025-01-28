@@ -1,3 +1,5 @@
+package com.github.michaeltomlinsontuks.bitburnerplugin
+
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.options.ConfigurationException
 import javax.swing.JComponent
