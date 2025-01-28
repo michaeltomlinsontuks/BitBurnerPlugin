@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.20"
-    id("org.jetbrains.intellij") version "1.16.1"
+    id("org.jetbrains.intellij") version "1.15.0"
     kotlin("plugin.serialization") version "1.9.20"
 }
 
@@ -12,8 +12,10 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+        vendor.set(JvmVendorSpec.ADOPTIUM)
+    }
 }
 
 dependencies {
@@ -49,5 +51,10 @@ tasks {
     
     compileTestKotlin {
         kotlinOptions.jvmTarget = "17"
+    }
+
+    withType<JavaCompile>().configureEach {
+        sourceCompatibility = "17"
+        targetCompatibility = "17"
     }
 }
