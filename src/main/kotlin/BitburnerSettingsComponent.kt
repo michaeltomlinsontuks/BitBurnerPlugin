@@ -1,9 +1,8 @@
 import com.intellij.openapi.options.Configurable
 import javax.swing.JComponent
-import javax.swing.JPanel
 import javax.swing.JTextField
 import javax.swing.JCheckBox
-import com.intellij.ui.layout.panel
+import com.intellij.ui.dsl.builder.panel
 
 class BitburnerSettingsComponent : Configurable {
     private val authTokenField = JTextField()
@@ -14,11 +13,11 @@ class BitburnerSettingsComponent : Configurable {
 
     override fun createComponent(): JComponent {
         return panel {
-            row("Auth Token:") { authTokenField() }
-            row("Script Root:") { scriptRootField() }
-            row("Enable File Watcher:") { fileWatcherEnabledCheckBox() }
-            row("Show Push Success Notification:") { showPushSuccessNotificationCheckBox() }
-            row("Show File Watcher Enabled Notification:") { showFileWatcherEnabledNotificationCheckBox() }
+            row("Auth Token:") { cell(authTokenField) }
+            row("Script Root:") { cell(scriptRootField) }
+            row("Enable File Watcher:") { cell(fileWatcherEnabledCheckBox) }
+            row("Show Push Success Notification:") { cell(showPushSuccessNotificationCheckBox) }
+            row("Show File Watcher Enabled Notification:") { cell(showFileWatcherEnabledNotificationCheckBox) }
         }
     }
 
