@@ -36,5 +36,8 @@
         <action id="com.github.michaeltomlinsontuks.bitburnerplugin.CalculateRamAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.CalculateRamAction" text="Calculate RAM for Script" description="Calculate the in-game RAM cost of a script">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
+        <action id="com.github.michaeltomlinsontuks.bitburnerplugin.GetDefinitionFileAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.GetDefinitionFileAction" text="Get Definition File from Bitburner" description="Get the definition file of the API">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
     </actions>
 </idea-plugin>
