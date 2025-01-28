@@ -10,8 +10,7 @@ class GetDefinitionFileAction : AnAction("Get Definition File from Bitburner") {
 
         val authToken = BitburnerSettings.getInstance().authToken
         val serverUrl = GameConfig.getServerUrl()
-        val client = HttpClient()
-        val apiService = BitburnerApiService(client, serverUrl)
+        val apiService = BitburnerApiService()
 
         try {
             val response = runBlocking {
@@ -26,7 +25,7 @@ class GetDefinitionFileAction : AnAction("Get Definition File from Bitburner") {
         } catch (ex: Exception) {
             Messages.showMessageDialog(project, "An error occurred: ${ex.message}", "Error", Messages.getErrorIcon())
         } finally {
-            client.close()
+            // client.close() is removed because the client is no longer created
         }
     }
 }

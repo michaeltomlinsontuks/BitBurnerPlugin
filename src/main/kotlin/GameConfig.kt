@@ -8,4 +8,8 @@ object GameConfig {
     fun getServerUrl(): String {
         return "$SCHEMA://$URL:$PORT$FILE_POST_URI"
     }
+
+    fun isValidFileExtension(filename: String): Boolean {
+        return VALID_FILE_EXTENSIONS.any { filename.endsWith(it) }
+    }
 }

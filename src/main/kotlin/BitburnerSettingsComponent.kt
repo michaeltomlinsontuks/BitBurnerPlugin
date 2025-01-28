@@ -1,4 +1,5 @@
 import com.intellij.openapi.options.Configurable
+import com.intellij.openapi.options.ConfigurationException
 import javax.swing.JComponent
 import javax.swing.JTextField
 import javax.swing.JCheckBox
@@ -21,6 +22,17 @@ class BitburnerSettingsComponent : Configurable {
         }
     }
 
+    private fun validateSettings(): List<String> {
+        val errors = mutableListOf<String>()
+        if (authTokenField.text.isBlank()) {
+            errors.add("Auth token cannot be empty")
+        }
+        if (!scriptRootField.text.startsWith("./")) {
+            errors.add("Script root must start with ./")
+        }
+        return errors
+    }
+
     override fun isModified(): Boolean {
         val settings = BitburnerSettings.getInstance()
         return authTokenField.text != settings.authToken ||
@@ -31,6 +43,11 @@ class BitburnerSettingsComponent : Configurable {
     }
 
     override fun apply() {
+        val errors = validateSettings()
+        if (errors.isNotEmpty()) {
+            throw ConfigurationException(errors.joinToString("\n"))
+        }
+        
         val settings = BitburnerSettings.getInstance()
         settings.authToken = authTokenField.text
         settings.scriptRoot = scriptRootField.text

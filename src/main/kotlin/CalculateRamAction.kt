@@ -10,8 +10,7 @@ class CalculateRamAction : AnAction("Calculate RAM for Script") {
         val virtualFile = e.getData(com.intellij.openapi.actionSystem.CommonDataKeys.VIRTUAL_FILE) ?: return
 
         val authToken = BitburnerSettings.getInstance().authToken
-        val client = HttpClient()
-        val apiService = BitburnerApiService(client)
+        val apiService = BitburnerApiService()
 
         val filename = virtualFile.name
         val server = "home" // Default server, could be made configurable in settings
@@ -29,7 +28,7 @@ class CalculateRamAction : AnAction("Calculate RAM for Script") {
         } catch (ex: Exception) {
             Messages.showMessageDialog(project, "An error occurred: ${ex.message}", "Error", Messages.getErrorIcon())
         } finally {
-            client.close()
+            // client.close() is removed because the HttpClient instance is no longer created
         }
     }
 }

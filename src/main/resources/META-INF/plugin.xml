@@ -11,6 +11,8 @@
         <toolWindow factoryClass="com.github.michaeltomlinsontuks.bitburnerplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <applicationService serviceImplementation="com.github.michaeltomlinsontuks.bitburnerplugin.BitburnerSettings"/>
         <projectConfigurable instance="com.github.michaeltomlinsontuks.bitburnerplugin.BitburnerSettingsComponent" displayName="Bitburner Settings"/>
+        <notificationGroup id="Bitburner Notifications" displayType="BALLOON"/>
+        <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
     </extensions>
 
     <applicationListeners>

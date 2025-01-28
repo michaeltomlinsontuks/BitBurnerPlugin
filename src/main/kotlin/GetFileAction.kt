@@ -12,8 +12,7 @@ class GetFileAction : AnAction("Get File from Bitburner") {
 
         val authToken = BitburnerSettings.getInstance().authToken
         val serverUrl = GameConfig.getServerUrl()
-        val client = HttpClient()
-        val apiService = BitburnerApiService(client, serverUrl)
+        val apiService = BitburnerApiService()
 
         val filename = virtualFile.name
         val server = "home" // Replace with your actual server name
@@ -31,7 +30,7 @@ class GetFileAction : AnAction("Get File from Bitburner") {
         } catch (ex: Exception) {
             Messages.showMessageDialog(project, "An error occurred: ${ex.message}", "Error", Messages.getErrorIcon())
         } finally {
-            client.close()
+            // client.close() is removed because the new constructor does not create a client
         }
     }
 }
