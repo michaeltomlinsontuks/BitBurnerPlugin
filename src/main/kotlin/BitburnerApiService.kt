@@ -28,5 +28,10 @@ class BitburnerApiService(private val client: HttpClient, private val serverUrl:
         sendRequest(JsonRpcRequest(id = id, method = "pushFile", params = params), authToken)
     }
 
+    fun getFile(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<String> = runBlocking {
+        val params = mapOf("filename" to filename, "server" to server)
+        sendRequest(JsonRpcRequest(id = id, method = "getFile", params = params), authToken)
+    }
+
     // Other methods...
 }

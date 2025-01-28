@@ -5,7 +5,7 @@ import com.intellij.openapi.ui.Messages
 import io.ktor.client.*
 import kotlinx.coroutines.runBlocking
 
-class PushFileAction : AnAction("Push File to Bitburner") {
+class GetFileAction : AnAction("Get File from Bitburner") {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val virtualFile = e.getData(com.intellij.openapi.actionSystem.CommonDataKeys.VIRTUAL_FILE) ?: return
@@ -16,17 +16,22 @@ class PushFileAction : AnAction("Push File to Bitburner") {
         val apiService = BitburnerApiService(client, serverUrl)
 
         val filename = virtualFile.name
-        val content = String(virtualFile.contentsToByteArray())
         val server = "home" // Replace with your actual server name
 
-        val response = runBlocking {
-            apiService.pushFile(1, filename, content, server, authToken)
-        }
+        try {
+            val response = runBlocking {
+                apiService.getFile(1, filename, server, authToken)
+            }
 
-        if (response.error == null) {
-            Messages.showMessageDialog(project, "File pushed successfully!", "Success", Messages.getInformationIcon())
-        } else {
-            Messages.showMessageDialog(project, "Failed to push file: ${response.error}", "Error", Messages.getErrorIcon())
+            if (response.error == null) {
+                Messages.showMessageDialog(project, "File content: ${response.result}", "Success", Messages.getInformationIcon())
+            } else {
+                Messages.showMessageDialog(project, "Failed to get file: ${response.error}", "Error", Messages.getErrorIcon())
+            }
+        } catch (ex: Exception) {
+            Messages.showMessageDialog(project, "An error occurred: ${ex.message}", "Error", Messages.getErrorIcon())
+        } finally {
+            client.close()
         }
     }
 }
