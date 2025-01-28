@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
+    kotlin("plugin.serialization") version "1.9.22"
 }
 
 group = providers.gradleProperty("pluginGroup").get()
@@ -39,6 +40,9 @@ repositories {
 dependencies {
     testImplementation(libs.junit)
 
+    // Serialization
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+
     // WebSockets
     implementation("io.ktor:ktor-client-core:2.3.7") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
@@ -50,6 +54,12 @@ dependencies {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
     }
     implementation("io.ktor:ktor-client-core-jvm:2.3.7") {
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+    }
+    implementation("io.ktor:ktor-client-content-negotiation:2.3.7") {
+        exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
+    }
+    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.7") {
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
     }
 

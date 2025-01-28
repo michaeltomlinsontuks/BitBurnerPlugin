@@ -9,6 +9,10 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import java.net.ConnectException
 import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.serialization.kotlinx.json.*
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
 class BitburnerApiService {
     companion object {
@@ -21,13 +25,22 @@ class BitburnerApiService {
                     requestTimeoutMillis = REQUEST_TIMEOUT
                     connectTimeoutMillis = CONNECT_TIMEOUT
                 }
+                install(ContentNegotiation) {
+                    json(Json {
+                        ignoreUnknownKeys = true
+                        isLenient = true
+                    })
+                }
             }
         }
     }
 
     private val client = createHttpClient()
 
+    @Serializable
     data class JsonRpcRequest(val jsonrpc: String = "2.0", val id: Int, val method: String, val params: Any? = null)
+    
+    @Serializable
     data class JsonRpcResponse<T>(val jsonrpc: String, val id: Int, val result: T?, val error: String?)
 
     private suspend inline fun <reified T> sendRequest(request: JsonRpcRequest, authToken: String): JsonRpcResponse<T> {
