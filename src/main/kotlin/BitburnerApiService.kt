@@ -13,6 +13,9 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.serialization.kotlinx.json.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 
 class BitburnerApiService {
     companion object {
@@ -38,10 +41,20 @@ class BitburnerApiService {
     private val client = createHttpClient()
 
     @Serializable
-    data class JsonRpcRequest(val jsonrpc: String = "2.0", val id: Int, val method: String, val params: Any? = null)
+    data class JsonRpcRequest(
+        val jsonrpc: String = "2.0", 
+        val id: Int, 
+        val method: String, 
+        val params: JsonElement? = null
+    )
     
     @Serializable
-    data class JsonRpcResponse<T>(val jsonrpc: String, val id: Int, val result: T?, val error: String?)
+    data class JsonRpcResponse<T>(
+        val jsonrpc: String, 
+        val id: Int, 
+        val result: T?, 
+        val error: String?
+    )
 
     private suspend inline fun <reified T> sendRequest(request: JsonRpcRequest, authToken: String): JsonRpcResponse<T> {
         return try {
@@ -50,70 +63,68 @@ class BitburnerApiService {
                 header("Authorization", "Bearer $authToken")
                 setBody(request)
             }
-            response.body<JsonRpcResponse<T>>()
+            response.body()
         } catch (e: ConnectException) {
-            JsonRpcResponse(
-                jsonrpc = "2.0",
-                id = request.id,
-                result = null,
-                error = "Failed to connect to game. Is Bitburner running?"
-            )
-        } catch (e: HttpRequestTimeoutException) {
-            JsonRpcResponse(
-                jsonrpc = "2.0",
-                id = request.id,
-                result = null,
-                error = "Request timed out. Please try again."
-            )
+            JsonRpcResponse("2.0", request.id, null, "Connection failed: ${e.message}")
         } catch (e: Exception) {
-            JsonRpcResponse(
-                jsonrpc = "2.0",
-                id = request.id,
-                result = null,
-                error = "Error: ${e.message}"
-            )
+            JsonRpcResponse("2.0", request.id, null, "Request failed: ${e.message}")
         }
     }
 
-    fun pushFile(id: Int, filename: String, content: String, server: String, authToken: String): JsonRpcResponse<String> = runBlocking {
+    fun pushFile(id: Int, filename: String, content: String, server: String, authToken: String): JsonRpcResponse<Boolean> = runBlocking {
         if (!GameConfig.isValidFileExtension(filename)) {
             return@runBlocking JsonRpcResponse("2.0", id, null, "Invalid file extension. Supported: ${GameConfig.VALID_FILE_EXTENSIONS}")
         }
-        val params = mapOf("filename" to filename, "content" to content, "server" to server)
+        val params = JsonObject(mapOf(
+            "filename" to JsonPrimitive(filename),
+            "content" to JsonPrimitive(content),
+            "server" to JsonPrimitive(server)
+        ))
         sendRequest(JsonRpcRequest(id = id, method = "pushFile", params = params), authToken)
     }
 
     fun getFile(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<String> = runBlocking {
-        val params = mapOf("filename" to filename, "server" to server)
+        val params = JsonObject(mapOf(
+            "filename" to JsonPrimitive(filename),
+            "server" to JsonPrimitive(server)
+        ))
         sendRequest(JsonRpcRequest(id = id, method = "getFile", params = params), authToken)
     }
 
-    suspend fun deleteFile(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<String> {
-        val params = mapOf("filename" to filename, "server" to server)
+    suspend fun deleteFile(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<Boolean> {
+        val params = JsonObject(mapOf(
+            "filename" to JsonPrimitive(filename),
+            "server" to JsonPrimitive(server)
+        ))
         return sendRequest(JsonRpcRequest(id = id, method = "deleteFile", params = params), authToken)
     }
 
     suspend fun getFileNames(id: Int, server: String, authToken: String): JsonRpcResponse<List<String>> {
-        val params = mapOf("server" to server)
+        val params = JsonObject(mapOf(
+            "server" to JsonPrimitive(server)
+        ))
         return sendRequest(JsonRpcRequest(id = id, method = "getFileNames", params = params), authToken)
     }
 
-    suspend fun getAllFiles(id: Int, server: String, authToken: String): JsonRpcResponse<List<Map<String, String>>> {
-        val params = mapOf("server" to server)
+    suspend fun getAllFiles(id: Int, server: String, authToken: String): JsonRpcResponse<Map<String, String>> {
+        val params = JsonObject(mapOf(
+            "server" to JsonPrimitive(server)
+        ))
         return sendRequest(JsonRpcRequest(id = id, method = "getAllFiles", params = params), authToken)
     }
 
-    suspend fun calculateRam(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<Int> {
+    suspend fun calculateRam(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<Double> {
         if (!GameConfig.isValidFileExtension(filename)) {
             return JsonRpcResponse("2.0", id, null, "Invalid file extension. Supported: ${GameConfig.VALID_FILE_EXTENSIONS}")
         }
-        val params = mapOf("filename" to filename, "server" to server)
+        val params = JsonObject(mapOf(
+            "filename" to JsonPrimitive(filename),
+            "server" to JsonPrimitive(server)
+        ))
         return sendRequest(JsonRpcRequest(id = id, method = "calculateRam", params = params), authToken)
     }
 
     suspend fun getDefinitionFile(id: Int, authToken: String): JsonRpcResponse<String> {
         return sendRequest(JsonRpcRequest(id = id, method = "getDefinitionFile"), authToken)
     }
-
-    // Other methods...
 }

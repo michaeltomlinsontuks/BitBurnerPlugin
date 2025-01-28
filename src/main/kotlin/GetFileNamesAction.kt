@@ -11,7 +11,6 @@ class GetFileNamesAction : AnAction("Get File Names from Bitburner") {
         val project = e.project ?: return
 
         val authToken = BitburnerSettings.getInstance().authToken
-        val serverUrl = GameConfig.getServerUrl()
         val apiService = BitburnerApiService()
 
         val server = "home" // Replace with your actual server name

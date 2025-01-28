@@ -4,7 +4,8 @@
     <vendor>michaeltomlinsontuks</vendor>
 
     <depends>com.intellij.modules.platform</depends>
-    <depends>JavaScript</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.javascript</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <applicationService serviceImplementation="com.github.michaeltomlinsontuks.bitburnerplugin.BitburnerSettings"/>

@@ -13,7 +13,6 @@ class GetFileAction : AnAction("Get File from Bitburner") {
         val virtualFile = e.getData(com.intellij.openapi.actionSystem.CommonDataKeys.VIRTUAL_FILE) ?: return
 
         val authToken = BitburnerSettings.getInstance().authToken
-        val serverUrl = GameConfig.getServerUrl()
         val apiService = BitburnerApiService()
 
         val filename = virtualFile.name
@@ -25,14 +24,12 @@ class GetFileAction : AnAction("Get File from Bitburner") {
             }
 
             if (response.error == null) {
-                Messages.showMessageDialog(project, "File content: ${response.result}", "Success", Messages.getInformationIcon())
+                Messages.showInfoMessage(project, "File content:\n${response.result}", "Success")
             } else {
-                Messages.showMessageDialog(project, "Failed to get file: ${response.error}", "Error", Messages.getErrorIcon())
+                Messages.showErrorDialog(project, "Failed to get file: ${response.error}", "Error")
             }
         } catch (ex: Exception) {
-            Messages.showMessageDialog(project, "An error occurred: ${ex.message}", "Error", Messages.getErrorIcon())
-        } finally {
-            // client.close() is removed because the new constructor does not create a client
+            Messages.showErrorDialog(project, "An error occurred: ${ex.message}", "Error")
         }
     }
 }

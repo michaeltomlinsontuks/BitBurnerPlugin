@@ -13,7 +13,6 @@ class DeleteFileAction : AnAction("Delete File from Bitburner") {
         val virtualFile = e.getData(com.intellij.openapi.actionSystem.CommonDataKeys.VIRTUAL_FILE) ?: return
 
         val authToken = BitburnerSettings.getInstance().authToken
-        val serverUrl = GameConfig.getServerUrl()
         val apiService = BitburnerApiService()
 
         val filename = virtualFile.name
@@ -24,15 +23,13 @@ class DeleteFileAction : AnAction("Delete File from Bitburner") {
                 apiService.deleteFile(1, filename, server, authToken)
             }
 
-            if (response.result == "OK") {
+            if (response.result == true) {
                 Messages.showMessageDialog(project, "File deleted successfully!", "Success", Messages.getInformationIcon())
             } else {
                 Messages.showMessageDialog(project, "Failed to delete file: ${response.error}", "Error", Messages.getErrorIcon())
             }
         } catch (ex: Exception) {
             Messages.showMessageDialog(project, "An error occurred: ${ex.message}", "Error", Messages.getErrorIcon())
-        } finally {
-            // client.close() is removed because the new BitburnerApiService constructor does not create a client
         }
     }
 }

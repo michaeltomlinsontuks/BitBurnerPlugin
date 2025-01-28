@@ -20,12 +20,11 @@ class GetAllFilesAction : AnAction("Get All Files from Bitburner") {
 
         runBlocking {
             try {
-                val serverUrl = GameConfig.getServerUrl()
                 val server = "home" // Replace with your actual server name
-                val response = apiService.getAllFiles(1, server, settings.authToken!!)
+                val response = apiService.getAllFiles(1, server, settings.authToken)
 
                 if (response.error == null) {
-                    val fileContents = response.result?.joinToString("\n") { "${it["filename"]}: ${it["content"]}" }
+                    val fileContents = response.result?.entries?.joinToString("\n") { "${it.key}: ${it.value}" }
                     Messages.showInfoMessage(project, "Files:\n$fileContents", "Success")
                 } else {
                     Messages.showErrorDialog(project, "Failed to get files: ${response.error}", "Error")
