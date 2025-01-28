@@ -5,19 +5,12 @@
 
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
-
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.michaeltomlinsontuks.bitburnerplugin.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <applicationService serviceImplementation="com.github.michaeltomlinsontuks.bitburnerplugin.BitburnerSettings"/>
         <projectConfigurable instance="com.github.michaeltomlinsontuks.bitburnerplugin.BitburnerSettingsComponent" displayName="Bitburner Settings"/>
         <notificationGroup id="Bitburner Notifications" displayType="BALLOON"/>
         <errorHandler implementation="com.intellij.diagnostic.ITNReporter"/>
     </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.michaeltomlinsontuks.bitburnerplugin.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 
     <actions>
         <action id="com.github.michaeltomlinsontuks.bitburnerplugin.PushFileAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.PushFileAction" text="Push File to Bitburner" description="Push the selected file to Bitburner">
@@ -30,12 +23,6 @@
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
         <action id="com.github.michaeltomlinsontuks.bitburnerplugin.GetFileNamesAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.GetFileNamesAction" text="Get File Names from Bitburner" description="Get file names from the Bitburner server">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
-        <action id="com.github.michaeltomlinsontuks.bitburnerplugin.GetAllFilesAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.GetAllFilesAction" text="Get All Files from Bitburner" description="Get all files from the Bitburner server">
-            <add-to-group group-id="ToolsMenu" anchor="last"/>
-        </action>
-        <action id="com.github.michaeltomlinsontuks.bitburnerplugin.CalculateRamAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.CalculateRamAction" text="Calculate RAM for Script" description="Calculate the in-game RAM cost of a script">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
         <action id="com.github.michaeltomlinsontuks.bitburnerplugin.GetDefinitionFileAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.GetDefinitionFileAction" text="Get Definition File from Bitburner" description="Get the definition file of the API">
