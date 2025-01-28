@@ -19,6 +19,12 @@ kotlin {
     jvmToolchain(17)
 }
 
+// Configure Java compatibility
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
 // Configure project's dependencies
 repositories {
     mavenCentral()
@@ -138,6 +144,12 @@ tasks {
 
     publishPlugin {
         dependsOn(patchChangelog)
+    }
+
+    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        kotlinOptions {
+            jvmTarget = "17"
+        }
     }
 }
 
