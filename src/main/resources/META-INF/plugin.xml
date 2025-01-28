@@ -19,9 +19,12 @@
 
     <actions>
         <action id="com.github.michaeltomlinsontuks.bitburnerplugin.PushFileAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.PushFileAction" text="Push File to Bitburner" description="Push the selected file to Bitburner">
-            <add-to-group group-id="ProjectViewPopupMenu" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
         <action id="com.github.michaeltomlinsontuks.bitburnerplugin.GetFileAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.GetFileAction" text="Get File from Bitburner" description="Get a file from the Bitburner server">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+        <action id="com.github.michaeltomlinsontuks.bitburnerplugin.DeleteFileAction" class="com.github.michaeltomlinsontuks.bitburnerplugin.DeleteFileAction" text="Delete File from Bitburner" description="Delete a file from the Bitburner server">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>

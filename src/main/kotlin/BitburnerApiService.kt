@@ -17,7 +17,7 @@ class BitburnerApiService(private val client: HttpClient, private val serverUrl:
                 header("Authorization", "Bearer $authToken")
                 setBody(request)
             }
-            response.body()
+            response.body<JsonRpcResponse<T>>()
         } catch (e: Exception) {
             JsonRpcResponse(jsonrpc = "2.0", id = request.id, result = null, error = e.message)
         }
@@ -31,6 +31,15 @@ class BitburnerApiService(private val client: HttpClient, private val serverUrl:
     fun getFile(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<String> = runBlocking {
         val params = mapOf("filename" to filename, "server" to server)
         sendRequest(JsonRpcRequest(id = id, method = "getFile", params = params), authToken)
+    }
+
+    suspend fun deleteFile(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<String> {
+        val response: HttpResponse = client.post("$serverUrl/deleteFile") {
+            header("Authorization", "Bearer $authToken")
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("jsonrpc" to "2.0", "id" to id, "method" to "deleteFile", "params" to mapOf("filename" to filename, "server" to server)))
+        }
+        return response.body()
     }
 
     // Other methods...
