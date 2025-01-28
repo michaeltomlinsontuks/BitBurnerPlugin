@@ -10,12 +10,11 @@ class CalculateRamAction : AnAction("Calculate RAM for Script") {
         val virtualFile = e.getData(com.intellij.openapi.actionSystem.CommonDataKeys.VIRTUAL_FILE) ?: return
 
         val authToken = BitburnerSettings.getInstance().authToken
-        val serverUrl = GameConfig.getServerUrl()
         val client = HttpClient()
-        val apiService = BitburnerApiService(client, serverUrl)
+        val apiService = BitburnerApiService(client)
 
         val filename = virtualFile.name
-        val server = "home" // Replace with your actual server name
+        val server = "home" // Default server, could be made configurable in settings
 
         try {
             val response = runBlocking {

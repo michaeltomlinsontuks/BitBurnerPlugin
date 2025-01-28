@@ -5,14 +5,14 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 
-class BitburnerApiService(private val client: HttpClient, private val serverUrl: String) {
+class BitburnerApiService(private val client: HttpClient) {
 
     data class JsonRpcRequest(val jsonrpc: String = "2.0", val id: Int, val method: String, val params: Any? = null)
     data class JsonRpcResponse<T>(val jsonrpc: String, val id: Int, val result: T?, val error: String?)
 
     private suspend inline fun <reified T> sendRequest(request: JsonRpcRequest, authToken: String): JsonRpcResponse<T> {
         return try {
-            val response: HttpResponse = client.post(serverUrl) {
+            val response: HttpResponse = client.post(GameConfig.getServerUrl()) {
                 contentType(ContentType.Application.Json)
                 header("Authorization", "Bearer $authToken")
                 setBody(request)
@@ -34,48 +34,27 @@ class BitburnerApiService(private val client: HttpClient, private val serverUrl:
     }
 
     suspend fun deleteFile(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<String> {
-        val response: HttpResponse = client.post("$serverUrl/deleteFile") {
-            header("Authorization", "Bearer $authToken")
-            contentType(ContentType.Application.Json)
-            setBody(mapOf("jsonrpc" to "2.0", "id" to id, "method" to "deleteFile", "params" to mapOf("filename" to filename, "server" to server)))
-        }
-        return response.body()
+        val params = mapOf("filename" to filename, "server" to server)
+        return sendRequest(JsonRpcRequest(id = id, method = "deleteFile", params = params), authToken)
     }
 
     suspend fun getFileNames(id: Int, server: String, authToken: String): JsonRpcResponse<List<String>> {
-        val response: HttpResponse = client.post("$serverUrl/getFileNames") {
-            header("Authorization", "Bearer $authToken")
-            contentType(ContentType.Application.Json)
-            setBody(mapOf("jsonrpc" to "2.0", "id" to id, "method" to "getFileNames", "params" to mapOf("server" to server)))
-        }
-        return response.body()
+        val params = mapOf("server" to server)
+        return sendRequest(JsonRpcRequest(id = id, method = "getFileNames", params = params), authToken)
     }
 
     suspend fun getAllFiles(id: Int, server: String, authToken: String): JsonRpcResponse<List<Map<String, String>>> {
-        val response: HttpResponse = client.post("$serverUrl/getAllFiles") {
-            header("Authorization", "Bearer $authToken")
-            contentType(ContentType.Application.Json)
-            setBody(mapOf("jsonrpc" to "2.0", "id" to id, "method" to "getAllFiles", "params" to mapOf("server" to server)))
-        }
-        return response.body()
+        val params = mapOf("server" to server)
+        return sendRequest(JsonRpcRequest(id = id, method = "getAllFiles", params = params), authToken)
     }
 
     suspend fun calculateRam(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<Int> {
-        val response: HttpResponse = client.post("$serverUrl/calculateRam") {
-            header("Authorization", "Bearer $authToken")
-            contentType(ContentType.Application.Json)
-            setBody(mapOf("jsonrpc" to "2.0", "id" to id, "method" to "calculateRam", "params" to mapOf("filename" to filename, "server" to server)))
-        }
-        return response.body()
+        val params = mapOf("filename" to filename, "server" to server)
+        return sendRequest(JsonRpcRequest(id = id, method = "calculateRam", params = params), authToken)
     }
 
     suspend fun getDefinitionFile(id: Int, authToken: String): JsonRpcResponse<String> {
-        val response: HttpResponse = client.post("$serverUrl/getDefinitionFile") {
-            header("Authorization", "Bearer $authToken")
-            contentType(ContentType.Application.Json)
-            setBody(mapOf("jsonrpc" to "2.0", "id" to id, "method" to "getDefinitionFile"))
-        }
-        return response.body()
+        return sendRequest(JsonRpcRequest(id = id, method = "getDefinitionFile"), authToken)
     }
 
     // Other methods...
