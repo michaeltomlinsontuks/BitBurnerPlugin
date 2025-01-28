@@ -60,5 +60,14 @@ class BitburnerApiService(private val client: HttpClient, private val serverUrl:
         return response.body()
     }
 
+    suspend fun calculateRam(id: Int, filename: String, server: String, authToken: String): JsonRpcResponse<Int> {
+        val response: HttpResponse = client.post("$serverUrl/calculateRam") {
+            header("Authorization", "Bearer $authToken")
+            contentType(ContentType.Application.Json)
+            setBody(mapOf("jsonrpc" to "2.0", "id" to id, "method" to "calculateRam", "params" to mapOf("filename" to filename, "server" to server)))
+        }
+        return response.body()
+    }
+
     // Other methods...
 }
