@@ -1,7 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.20"
     id("org.jetbrains.intellij") version "1.15.0"
-    kotlin("plugin.serialization") version "1.9.20"
+    kotlin("plugin.serialization") version "2.1.10"
 }
 
 group = "com.github.michaeltomlinsontuks"
